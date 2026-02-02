@@ -1,20 +1,18 @@
 import logging
-import os
 import requests
 from datetime import datetime, date, timedelta
+
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
-from dotenv import load_dotenv
 
 # ================== SOZLAMALAR ==================
-load_dotenv()
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME")
+BOT_TOKEN = "8530943208:AAEajaRL3UFD6jNqkAUs5POFpD9WO03wDGE"      # <-- Bu yerga bot tokeningiz
+CHANNEL_USERNAME = "@Sangzoruz1"       # <-- Majburiy kanal username
 
-# Ramazon boshlanishi (2026)
+# Ramazon boshlanishi (2026-yil)
 RAMAZAN_START = date(2026, 2, 18)
 
-# Viloyatlar va markazlari
+# Viloyatlar va ularning markazlari
 CITIES = {
     "Toshkent": "Tashkent",
     "Andijon": "Andijan",
@@ -28,13 +26,13 @@ CITIES = {
     "Qashqadaryo": "Karshi",
     "Surxondaryo": "Termez",
     "Xorazm": "Urgench",
-    "Toshkent viloyati": "Nurafshon",
+    "Toshkent v.": "Nurafshon",
     "Qoraqalpog‘iston": "Nukus",
 }
 
 # ================== BOT ==================
 logging.basicConfig(level=logging.INFO)
-bot = Bot(token=BOT_TOKEN, parse_mode=types.ParseMode.HTML)
+bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 
 # ================== YORDAMCHI FUNKSIYALAR ==================
@@ -59,13 +57,14 @@ def get_prayer_times(city_en: str):
 
 def get_ramazan_day() -> int:
     today = date.today()
-    return (today - RAMAZAN_START).days + 1
+    delta = (today - RAMAZAN_START).days + 1
+    return delta if delta > 0 else 0
 
 def time_to_ramazan_start() -> str:
     now = datetime.now()
     ramazan_datetime = datetime.combine(RAMAZAN_START, datetime.min.time())
     if now >= ramazan_datetime:
-        return "Ramazon allaqachon boshlandi 🌙"
+        return "🌙 Ramazon allaqachon boshlandi!"
     delta = ramazan_datetime - now
     days = delta.days
     hours, remainder = divmod(delta.seconds, 3600)
@@ -92,19 +91,19 @@ def subscribe_keyboard():
 
 @dp.message_handler(commands="start")
 async def start_handler(message: types.Message):
-    user_name = message.from_user.first_name
+    user_name = message.from_user.first_name or "Do‘st"
     if not await check_subscription(message.from_user.id):
         await message.answer(
-            f"⚠️ Assalomu alaykum, {user_name}!\n\n"
-            "Botdan foydalanish uchun avval kanalga obuna bo‘ling:",
-            reply_markup=subscribe_keyboard()
+            f"Assalomu alaykum, <b>{user_name}</b>!\n⚠️ Botdan foydalanish uchun avval kanalga obuna bo‘ling:",
+            reply_markup=subscribe_keyboard(),
+            parse_mode="HTML"
         )
         return
 
     await message.answer(
-        f"Assalomu alaykum, {user_name}!\n"
-        f"{time_to_ramazan_start()}\n\n📍 Viloyatingizni tanlang:",
-        reply_markup=regions_keyboard()
+        f"Assalomu alaykum, <b>{user_name}</b>!\n\n{time_to_ramazan_start()}\n\n📍 Viloyatingizni tanlang:",
+        reply_markup=regions_keyboard(),
+        parse_mode="HTML"
     )
 
 @dp.callback_query_handler(lambda c: c.data == "check_sub")
@@ -117,17 +116,18 @@ async def recheck_subscription(call: types.CallbackQuery):
 
 @dp.message_handler(lambda m: m.text in CITIES)
 async def region_handler(message: types.Message):
+    user_name = message.from_user.first_name or "Do‘st"
     if not await check_subscription(message.from_user.id):
         await message.answer(
-            "❌ Avval kanalga obuna bo‘ling",
-            reply_markup=subscribe_keyboard()
+            f"Assalomu alaykum, <b>{user_name}</b>!\n❌ Avval kanalga obuna bo‘ling",
+            reply_markup=subscribe_keyboard(),
+            parse_mode="HTML"
         )
         return
 
     city_en = CITIES[message.text]
     saharlik, iftor = get_prayer_times(city_en)
     ramazan_day = get_ramazan_day()
-    user_name = message.from_user.first_name
 
     if saharlik is None:
         await message.answer("⚠️ Maʼlumotni olishda xatolik yuz berdi. Keyinroq qayta urinib ko‘ring.")
@@ -135,29 +135,28 @@ async def region_handler(message: types.Message):
 
     # Saharlik duosi
     saharlik_duo_arab = "Navaytu an asuma sovma shahri ramazona minal fajri ilal mag‘ribi, xolisan lillahi ta’ala. Allohu akbar."
-    saharlik_duo_uz = "Ma’nosi: Ramazon oyining ro‘zasini subhdan to kun botguncha tutmoqni niyat qildim. Xolis Alloh uchun Alloh buyukdir."
+    saharlik_duo_uz = "Ramazon oyining ro‘zasini subhdan to kun botguncha tutmoqni niyat qildim. Xolis Alloh uchun Alloh buyukdir."
 
     # Iftor duosi
     iftor_duo_arab = "Allohumma laka sumtu va bika amantu va a’layka tavakkaltu va a’la rizqika aftartu, fag‘firli ya g‘offaru ma qoddamtu va ma axxortu."
-    iftor_duo_uz = "Ma’nosi: Ey Alloh, ushbu Ro‘zamni Sen uchun tutdim va Senga iymon keltirdim va Senga tavakkal qildim va bergan rizqing bilan iftor qildim. Ey mehribonlarning eng mehriboni, mening avvalgi va keyingi gunohlarimni mag‘firat qilgil."
+    iftor_duo_uz = "Ey Alloh, ushbu Ro‘zamni Sen uchun tutdim va Senga iymon keltirdim va Senga tavakkal qildim va bergan rizqing bilan iftor qildim. Ey mehribonlarning eng mehriboni, mening avvalgi va keyingi gunohlarimni mag‘firat qilgil."
 
-    # HTML bilan chiroyli format
-    msg = (
+    await message.answer(
+        f"Assalomu alaykum, <b>{user_name}</b>!\n\n"
         f"📍 <b>{message.text}</b>\n"
         f"📅 {datetime.now().strftime('%d.%m.%Y')}\n"
-        f"🌙 {ramazan_day}-Ramazon\n"
-        f"⏰ Saharlik: {saharlik}\n"
-        f"🌇 Iftor: {iftor}\n\n"
+        f"🌙 <b>{ramazan_day}-Ramazon</b>\n"
+        f"⏰ <b>Saharlik:</b> {saharlik}\n"
+        f"🌇 <b>Iftor:</b> {iftor}\n\n"
         f"{time_to_ramazan_start()}\n\n"
-        f"🕋 <b>Saharlik duosi:</b>\n"
-        f"{saharlik_duo_arab}\n"
-        f"{saharlik_duo_uz}\n\n"
-        f"🌅 <b>Iftor duosi:</b>\n"
-        f"{iftor_duo_arab}\n"
-        f"{iftor_duo_uz}"
+        f"<u>🕋 Saharlik duosi</u>\n"
+        f"<b>{saharlik_duo_arab}</b>\n"
+        f"<i>{saharlik_duo_uz}</i>\n\n"
+        f"<u>🌅 Iftor duosi</u>\n"
+        f"<b>{iftor_duo_arab}</b>\n"
+        f"<i>{iftor_duo_uz}</i>",
+        parse_mode="HTML"
     )
-
-    await message.answer(msg)
 
 # ================== ISHGA TUSHIRISH ==================
 if __name__ == "__main__":
