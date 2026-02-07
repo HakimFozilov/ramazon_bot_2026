@@ -10,7 +10,7 @@ BOT_TOKEN = "8530943208:AAEajaRL3UFD6jNqkAUs5POFpD9WO03wDGE"      # <-- Bu yerga
 CHANNEL_USERNAME = "@Sangzoruz1"       # <-- Majburiy kanal username
 
 # Ramazon boshlanishi (2026-yil)
-RAMAZAN_START = date(2026, 2, 18)
+RAMAZAN_START = date(2026, 2, 19)
 
 # Viloyatlar va ularning markazlari
 CITIES = {
