@@ -50,7 +50,7 @@ def shift_time(t_str, m):
     t = datetime.strptime(t_str, "%H:%M")
     return (t + timedelta(minutes=m)).strftime("%H:%M")
 
-# ================== 3. DUOLAR ==================
+# ================== 3. MATNLAR (DUOLAR) ==================
 
 SAHARLIK_DUO = (
     "<b>🌙 Saharlik (og'iz yopish) duosi:</b>\n"
@@ -61,7 +61,7 @@ SAHARLIK_DUO = (
 IFTORLIK_DUO = (
     "<b>🌇 Iftorlik (og'iz ochish) duosi:</b>\n"
     "<i>Allohumma laka sumtu va bika amantu va a’layka tavakkaltu va a’la rizqika aftartu, fag‘firli ya g‘offaru ma qoddamtu va ma axxortu.</i>\n\n"
-    "<b>Ma'nosi:</b> Ey Alloh, ushbu Ro‘zamni Sen uchun tutdim va Senga iymon keltirdim va Senga tavakkal qildim va bergan rizqing bilan iftor qildim. Gunohlarni kechiruvchi Zot, avvalgi va keyingi gunohlarimni mag‘firat qilgin."
+    "<b>Ma'nosi:</b> Ey Alloh, ushbu Ro‘zamni Sen uchun tutdim va Senga iymon keltirdim va Senga tavakkal qildim va bergan rizqing bilan iftor qildim. Gunohlarni kechiruvchi Zot, mening avvalgi va keyingi gunohlarimni mag‘firat qilgin."
 )
 
 # ================== 4. HANDLERLAR ==================
@@ -74,7 +74,8 @@ def get_regions_kb():
 
 def get_main_menu():
     kb = ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    kb.add(KeyboardButton("🕌 Bugungi taqvim"), KeyboardButton("📍 Hududni o'zgartirish"))
+    kb.add(KeyboardButton("🕌 Bugungi taqvim"), KeyboardButton("🕌 Ertangi taqvim"))
+    kb.add(KeyboardButton("📍 Hududni o'zgartirish"))
     return kb
 
 @dp.message_handler(commands=['start'])
@@ -83,46 +84,43 @@ async def start(message: types.Message):
         btn = InlineKeyboardMarkup().add(InlineKeyboardButton("➕ Obuna bo'lish", url=f"https://t.me/{CHANNEL_USERNAME[1:]}"))
         btn.add(InlineKeyboardButton("✅ Tekshirish", callback_data="check"))
         return await message.answer(f"Botdan foydalanish uchun {CHANNEL_USERNAME} kanaliga obuna bo'ling!", reply_markup=btn)
-    await message.answer("Assalomu alaykum! Viloyatingizni tanlang:", reply_markup=get_regions_kb())
+    await message.answer(f"Assalomu alaykum, {message.from_user.first_name}! Hududni tanlang:", reply_markup=get_regions_kb())
 
 @dp.callback_query_handler(text="check")
 async def check_cb(call: types.CallbackQuery):
     if await check_sub(call.from_user.id):
         await call.message.delete()
-        await call.message.answer("Obuna tasdiqlandi! Viloyatni tanlang:", reply_markup=get_regions_kb())
+        await call.message.answer("Obuna tasdiqlandi! Hududni tanlang:", reply_markup=get_regions_kb())
     else:
         await call.answer("Siz hali kanalga a'zo emassiz! ❌", show_alert=True)
 
 @dp.message_handler(lambda m: m.text in REGIONS)
 async def set_region(message: types.Message):
+    if not await check_sub(message.from_user.id): return await start(message)
     user_settings[message.from_user.id] = message.text
-    await message.answer(f"✅ Hudud <b>{message.text}</b> qilib belgilandi!", parse_mode="HTML", reply_markup=get_main_menu())
+    await message.answer(f"✅ <b>{message.text}</b> hududi belgilandi!", parse_mode="HTML", reply_markup=get_main_menu())
 
 @dp.message_handler(lambda m: m.text == "📍 Hududni o'zgartirish")
 async def change_reg(message: types.Message):
-    await message.answer("Yangi viloyatni tanlang:", reply_markup=get_regions_kb())
+    await message.answer("Yangi hududni tanlang:", reply_markup=get_regions_kb())
 
-@dp.message_handler(lambda m: m.text == "🕌 Bugungi taqvim")
-async def show_daily(message: types.Message):
+async def send_calendar(message, date_obj, title_prefix):
     user_id = message.from_user.id
-    if not await check_sub(user_id): return await start(message)
-
     city = user_settings.get(user_id)
-    if not city: return await message.answer("Iltimos, avval viloyatingizni tanlang!", reply_markup=get_regions_kb())
+    if not city: return await message.answer("Iltimos, avval hududni tanlang!", reply_markup=get_regions_kb())
 
-    today = datetime.now().strftime("%d-%m")
-    
-    if today in TASHKENT_BASE:
-        data = TASHKENT_BASE[today]
-        offset = REGIONS[city]
+    date_str = date_obj.strftime("%d-%m")
+    if date_str in TASHKENT_BASE:
+        data = TASHKENT_BASE[date_str]
+        offset = REGIONS[city] #
         
         sah = shift_time(data['sah'], offset)
         ift = shift_time(data['ift'], offset)
         
         resp = (
-            f"📅 <b>Bugun: {datetime.now().strftime('%d.%m.%Y')}</b>\n"
+            f"📅 <b>{title_prefix}: {date_obj.strftime('%d.%m.%Y')}</b>\n"
             f"📍 Hudud: <b>{city}</b>\n"
-            f"🌙 Ramazonning <b>{data['day']}-kuni</b>\n"
+            f"🌙 Ramazonning <b>{data['day']}-kuni</b>\n" #
             f"──────────────────\n"
             f"🍽 Saharlik: <b>{sah}</b>\n"
             f"🌇 Iftorlik: <b>{ift}</b>\n"
@@ -132,8 +130,18 @@ async def show_daily(message: types.Message):
         )
         await message.answer(resp, parse_mode="HTML")
     else:
-        # Ramazon kunlaridan tashqari vaqt bo'lsa
-        await message.answer("⚠️ Bugungi sana uchun Ramazon taqvimi mavjud emas (Ramazon hali boshlanmagan yoki tugagan).")
+        await message.answer(f"⚠️ {date_obj.strftime('%d.%m.%Y')} sanasi uchun Ramazon taqvimi mavjud emas.")
+
+@dp.message_handler(lambda m: m.text == "🕌 Bugungi taqvim")
+async def show_today(message: types.Message):
+    if not await check_sub(message.from_user.id): return await start(message)
+    await send_calendar(message, datetime.now(), "Bugungi taqvim")
+
+@dp.message_handler(lambda m: m.text == "🕌 Ertangi taqvim")
+async def show_tomorrow(message: types.Message):
+    if not await check_sub(message.from_user.id): return await start(message)
+    tomorrow = datetime.now() + timedelta(days=1)
+    await send_calendar(message, tomorrow, "Ertangi taqvim")
 
 if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
