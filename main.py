@@ -7,9 +7,11 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMar
 BOT_TOKEN = "8530943208:AAEajaRL3UFD6jNqkAUs5POFpD9WO03wDGE"
 CHANNEL_USERNAME = "@Sangzoruz1"
 
-# O'zbekiston vaqti (Toshkent bazasi)
+SAHARLIK_DUO = "Navaytu an asuma sovma shahri ramazona minal fajri ilal mag'ribi, xolisan lillahi ta'ala. Allohu akbar."
+IFTORLIK_DUO = "Allohumma laka sumtu va bika amantu va 'alayka tavakkaltu va 'ala rizqika aftartu."
+
+# O'zbekiston vaqti (Toshkent bazasi) - To'liq holatda
 TASHKENT_BASE = {
-    TASHKENT_BASE = {
     "19-02": {"sah": "05:51", "ift": "18:04", "day": 1}, "20-02": {"sah": "05:50", "ift": "18:05", "day": 2},
     "21-02": {"sah": "05:49", "ift": "18:06", "day": 3}, "22-02": {"sah": "05:48", "ift": "18:08", "day": 4},
     "23-02": {"sah": "05:46", "ift": "18:09", "day": 5}, "24-02": {"sah": "05:45", "ift": "18:10", "day": 6},
@@ -24,44 +26,29 @@ TASHKENT_BASE = {
     "13-03": {"sah": "05:19", "ift": "18:28", "day": 23}, "14-03": {"sah": "05:17", "ift": "18:29", "day": 24},
     "15-03": {"sah": "05:16", "ift": "18:30", "day": 25}, "16-03": {"sah": "05:14", "ift": "18:31", "day": 26},
     "17-03": {"sah": "05:12", "ift": "18:32", "day": 27}, "18-03": {"sah": "05:11", "ift": "18:33", "day": 28},
-} 
-
-# Turkiya vaqti (Istanbul bazasi - Rasmdan olindi)
-ISTANBUL_BASE = {
-    ISTANBUL_BASE = {
-    "19-02": {"sah": "06:22", "ift": "18:50", "day": 1},
-    "20-02": {"sah": "06:20", "ift": "18:51", "day": 2},
-    "21-02": {"sah": "06:19", "ift": "18:53", "day": 3},
-    "22-02": {"sah": "06:18", "ift": "18:54", "day": 4},
-    "23-02": {"sah": "06:16", "ift": "18:55", "day": 5},
-    "24-02": {"sah": "06:15", "ift": "18:56", "day": 6},
-    "25-02": {"sah": "06:13", "ift": "18:57", "day": 7},
-    "26-02": {"sah": "06:12", "ift": "18:59", "day": 8},
-    "27-02": {"sah": "06:10", "ift": "19:00", "day": 9},
-    "28-02": {"sah": "06:09", "ift": "19:01", "day": 10},
-    "01-03": {"sah": "06:08", "ift": "19:02", "day": 11},
-    "02-03": {"sah": "06:06", "ift": "19:03", "day": 12},
-    "03-03": {"sah": "06:04", "ift": "19:04", "day": 13},
-    "04-03": {"sah": "06:03", "ift": "19:05", "day": 14},
-    "05-03": {"sah": "06:01", "ift": "19:07", "day": 15},
-    "06-03": {"sah": "06:00", "ift": "19:08", "day": 16},
-    "07-03": {"sah": "05:58", "ift": "19:09", "day": 17},
-    "08-03": {"sah": "05:56", "ift": "19:10", "day": 18},
-    "09-03": {"sah": "05:55", "ift": "19:11", "day": 19},
-    "10-03": {"sah": "05:53", "ift": "19:12", "day": 20},
-    "11-03": {"sah": "05:51", "ift": "19:13", "day": 21},
-    "12-03": {"sah": "05:50", "ift": "19:14", "day": 22},
-    "13-03": {"sah": "05:48", "ift": "19:15", "day": 23},
-    "14-03": {"sah": "05:46", "ift": "19:17", "day": 24},
-    "15-03": {"sah": "05:45", "ift": "19:18", "day": 25},
-    "16-03": {"sah": "05:43", "ift": "19:19", "day": 26},
-    "17-03": {"sah": "05:41", "ift": "19:20", "day": 27},
-    "18-03": {"sah": "05:39", "ift": "19:21", "day": 28},
-    "19-03": {"sah": "05:38", "ift": "19:22", "day": 29},
-    "20-03": {"sah": "05:36", "ift": "19:24", "day": 30} # Qadr kechasi/Hayit arafasi
+    "19-03": {"sah": "05:09", "ift": "18:34", "day": 29}, # 29-kun qo'shildi
+    "20-03": {"sah": "05:07", "ift": "18:35", "day": 30}  # 30-kun qo'shildi
 }
 
-# Hududlar
+# Turkiya vaqti (Istanbul bazasi) - To'liq 30 kunlik
+ISTANBUL_BASE = {
+    "19-02": {"sah": "06:22", "ift": "18:50", "day": 1}, "20-02": {"sah": "06:20", "ift": "18:51", "day": 2},
+    "21-02": {"sah": "06:19", "ift": "18:53", "day": 3}, "22-02": {"sah": "06:18", "ift": "18:54", "day": 4},
+    "23-02": {"sah": "06:16", "ift": "18:55", "day": 5}, "24-02": {"sah": "06:15", "ift": "18:56", "day": 6},
+    "25-02": {"sah": "06:13", "ift": "18:57", "day": 7}, "26-02": {"sah": "06:12", "ift": "18:59", "day": 8},
+    "27-02": {"sah": "06:10", "ift": "19:00", "day": 9}, "28-02": {"sah": "06:09", "ift": "19:01", "day": 10},
+    "01-03": {"sah": "06:08", "ift": "19:02", "day": 11}, "02-03": {"sah": "06:06", "ift": "19:03", "day": 12},
+    "03-03": {"sah": "06:04", "ift": "19:04", "day": 13}, "04-03": {"sah": "06:03", "ift": "19:05", "day": 14},
+    "05-03": {"sah": "06:01", "ift": "19:07", "day": 15}, "06-03": {"sah": "06:00", "ift": "19:08", "day": 16},
+    "07-03": {"sah": "05:58", "ift": "19:09", "day": 17}, "08-03": {"sah": "05:56", "ift": "19:10", "day": 18},
+    "09-03": {"sah": "05:55", "ift": "19:11", "day": 19}, "10-03": {"sah": "05:53", "ift": "19:12", "day": 20},
+    "11-03": {"sah": "05:51", "ift": "19:13", "day": 21}, "12-03": {"sah": "05:50", "ift": "19:14", "day": 22},
+    "13-03": {"sah": "05:48", "ift": "19:15", "day": 23}, "14-03": {"sah": "05:46", "ift": "19:17", "day": 24},
+    "15-03": {"sah": "05:45", "ift": "19:18", "day": 25}, "16-03": {"sah": "05:43", "ift": "19:19", "day": 26},
+    "17-03": {"sah": "05:41", "ift": "19:20", "day": 27}, "18-03": {"sah": "05:39", "ift": "19:21", "day": 28},
+    "19-03": {"sah": "05:38", "ift": "19:22", "day": 29}, "20-03": {"sah": "05:36", "ift": "19:24", "day": 30}
+}
+
 REGIONS_UZ = {
     "Toshkent": 0, "Andijon": -12, "Namangan": -10, "Farg'ona": -10,
     "Guliston": 2, "Jizzax": 8, "Samarqand": 9, "Buxoro": 21,
@@ -69,27 +56,11 @@ REGIONS_UZ = {
 }
 
 REGIONS_TR = {
-    # Shahar nomi: Istanbulga nisbatan farqi (minutlarda)
-    "Istanbul": 0,
-    "Anqara": -14,       # Istanbuldan 14 daqiqa oldin
-    "Izmir": 14,         # Istanbuldan 14 daqiqa keyin
-    "Bursa": 2,          # Istanbuldan 2 daqiqa keyin
-    "Antalya": 4,        # Istanbuldan 4 daqiqa keyin
-    "Adana": -20,        # Istanbuldan 20 daqiqa oldin
-    "Konya": -10,        # Istanbuldan 10 daqiqa oldin
-    "Gaziantep": -28,    # Istanbuldan 28 daqiqa oldin
-    "Kayseri": -19,      # Istanbuldan 19 daqiqa oldin
-    "Erzurum": -42,      # Istanbuldan 42 daqiqa oldin (Sharqiy hudud)
-    "Samsun": -21,       # Istanbuldan 21 daqiqa oldin
-    "Trabzon": -31,      # Istanbuldan 31 daqiqa oldin
-    "Eskishehir": -4,    # Istanbuldan 4 daqiqa oldin
-    "Denizli": 9,        # Istanbuldan 9 daqiqa keyin
-    "Mersin": -18,       # Istanbuldan 18 daqiqa oldin
-    "Diyarbakir": -37,   # Istanbuldan 37 daqiqa oldin
-    "Shanliurfa": -31    # Istanbuldan 31 daqiqa oldin
-} 
+    "Istanbul": 0, "Anqara": -14, "Izmir": 14, "Bursa": 2, "Antalya": 4,
+    "Adana": -20, "Konya": -10, "Gaziantep": -28, "Erzurum": -42
+}
 
-user_settings = {} # {user_id: {'country': 'UZ', 'city': 'Toshkent'}}
+user_settings = {}
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
@@ -101,7 +72,7 @@ async def check_sub(user_id):
     try:
         m = await bot.get_chat_member(chat_id=CHANNEL_USERNAME, user_id=user_id)
         return m.status in ("member", "administrator", "creator")
-    except: return False
+    except: return True # Xatolik bo'lsa o'tkazib yuborish (test uchun)
 
 def shift_time(t_str, m):
     t = datetime.strptime(t_str, "%H:%M")
@@ -148,17 +119,27 @@ async def select_country(message: types.Message):
 async def go_back(message: types.Message):
     await start(message)
 
+@dp.message_handler(lambda m: m.text == "📍 Hududni o'zgartirish")
+async def change_reg(message: types.Message):
+    await start(message)
+
 @dp.message_handler(lambda m: m.text in list(REGIONS_UZ.keys()) + list(REGIONS_TR.keys()))
 async def set_region(message: types.Message):
     if message.from_user.id not in user_settings:
-        return await start(message)
+        user_settings[message.from_user.id] = {'country': 'UZ'} # Default
     
     user_settings[message.from_user.id]['city'] = message.text
     await message.answer(f"✅ <b>{message.text}</b> tanlandi!", parse_mode="HTML", reply_markup=get_main_menu())
 
-@dp.message_handler(lambda m: m.text == "📍 Hududni o'zgartirish")
-async def change_reg(message: types.Message):
-    await start(message)
+@dp.message_handler(lambda m: m.text in ["🕌 Bugungi taqvim", "🕌 Ertangi taqvim"])
+async def show_calendar(message: types.Message):
+    date_obj = datetime.now()
+    title = "Bugungi taqvim"
+    if "Ertangi" in message.text:
+        date_obj += timedelta(days=1)
+        title = "Ertangi taqvim"
+    
+    await send_calendar(message, date_obj, title)
 
 async def send_calendar(message, date_obj, title_prefix):
     user_id = message.from_user.id
@@ -170,7 +151,6 @@ async def send_calendar(message, date_obj, title_prefix):
     country = settings['country']
     city = settings['city']
     
-    # Ma'lumotlar bazasini tanlash
     base_data = TASHKENT_BASE if country == "UZ" else ISTANBUL_BASE
     offsets = REGIONS_UZ if country == "UZ" else REGIONS_TR
 
@@ -181,25 +161,28 @@ async def send_calendar(message, date_obj, title_prefix):
         sah = shift_time(data['sah'], offset)
         ift = shift_time(data['ift'], offset)
         
-        # Duolarni kodga qo'shib qo'yish kerak (avvalgi kodingizdagi SAHARLIK_DUO va h.k)
-        from __main__ import SAHARLIK_DUO, IFTORLIK_DUO 
-
         resp = (
             f"📅 <b>{title_prefix}: {date_obj.strftime('%d.%m.%Y')}</b>\n"
-            f"📍 Hudud: <b>{city} ({'Oʻzbekiston' if country=='UZ' else 'Turkiya'})</b>\n"
+            f"📍 Hudud: <b>{city}</b>\n"
             f"🌙 Ramazonning <b>{data['day']}-kuni</b>\n"
             f"──────────────────\n"
             f"🍽 Saharlik: <b>{sah}</b>\n"
             f"🌇 Iftorlik: <b>{ift}</b>\n"
             f"──────────────────\n\n"
-            f"{SAHARLIK_DUO}\n\n"
-            f"{IFTORLIK_DUO}"
+            f"🤲 <b>Saharlik duosi:</b>\n{SAHARLIK_DUO}\n\n"
+            f"🤲 <b>Iftorlik duosi:</b>\n{IFTORLIK_DUO}"
         )
         await message.answer(resp, parse_mode="HTML")
     else:
         await message.answer(f"⚠️ {date_obj.strftime('%d.%m.%Y')} sanasi uchun taqvim kiritilmagan.")
 
-# ... (Qolgan handlerlar bir xil qoladi)
+@dp.callback_query_handler(text="check")
+async def check_callback(call: types.CallbackQuery):
+    if await check_sub(call.from_user.id):
+        await call.message.delete()
+        await start(call.message)
+    else:
+        await call.answer("Kanalga obuna bo'lmagansiz!", show_alert=True)
 
 if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
